@@ -14,7 +14,7 @@ int main() {
 
   FeatherWeightApp* app = fwCreateApp();
 
-  fwGet(app, "/", rootHandler);
+  fwGet(app, "^/$", rootHandler);
 
   fwListen(app, PORT, THREAD_COUNT, QUEUE_SIZE);
 
