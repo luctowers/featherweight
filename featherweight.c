@@ -11,7 +11,6 @@
 
 bool featherWeightDebug = false;
 
-
 FeatherWeightApp* fwCreateApp() {
 
   FeatherWeightApp* app = malloc(sizeof(FeatherWeightApp));
@@ -158,6 +157,9 @@ static void* workerTask(void* argument) {
     connection = connectionQueuePop(parameters->connection_queue);
 
     pthread_mutex_unlock(&parameters->mutex);  // RELEASE LOCK
+
+    if(featherWeightDebug)
+      printf("New request on thread: %u\n", (unsigned) pthread_self());
 
     // respond to the connection
     const char* message = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\nConnection: close\r\n\r\nHello, world!";
