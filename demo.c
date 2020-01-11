@@ -4,7 +4,7 @@
 #define THREAD_COUNT 16
 #define QUEUE_SIZE 256
 
-FILE* rootHandler(FeatherWeightRequest request, FILE* response) {
+FILE* rootHandler(FeatherWeightRequest* request, FILE* response) {
 
   return NULL; // do not call any more handlers
 

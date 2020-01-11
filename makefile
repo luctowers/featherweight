@@ -1,4 +1,4 @@
-OBJECTS = featherweight.o net.o demo.o
+OBJECTS = featherweight.o net.o demo.o http.o
 LDFLAGS = -lpthread
 
 default: demo

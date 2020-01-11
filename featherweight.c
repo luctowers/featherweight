@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 
 #include "net.h"
+#include "http.h"
 
 bool featherWeightDebug = false;
 
@@ -165,6 +166,28 @@ static void* workerTask(void* argument) {
     const char* message = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\nConnection: close\r\n\r\nHello, world!";
     send(connection.socketfd, message, strlen(message), 0);
     close(connection.socketfd);
+
+    // read request
+    FeatherWeightRequest request;
+    char* request_buffer = malloc(FW_MAX_REQUEST_SIZE+1);
+    unsigned readCount = readFromConnection(&connection, request_buffer, FW_MAX_REQUEST_SIZE);
+    request_buffer[readCount] = 0; // place a null terminator
+    parseRequest(&request, request_buffer);
+
+    // only get requests for now
+    if (strcmp(request.method, "GET")) {
+      free(request_buffer);
+      refuseConnection(&connection);
+      return NULL;
+    }
+
+    // respond to request
+    FILE* response = fileInterfaceFromConnection(&connection);
+    fprintf(response, "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nrequested path: %s", request.path);
+    fclose(response);
+
+    // free request buffer
+    free(request_buffer);
 
   }
 
