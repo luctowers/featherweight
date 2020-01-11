@@ -31,7 +31,7 @@ int createTCPListenerSocket(uint16_t port, int backlog_limit) {
   }
 
   // bind the socket
-  address.sin_family = AF_INET6; 
+  address.sin_family = AF_INET; 
   address.sin_addr.s_addr = INADDR_ANY; 
   address.sin_port = htons(port);
   int bind_status = bind(sockfd, (struct sockaddr*) &address, sizeof(address));
