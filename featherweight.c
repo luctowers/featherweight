@@ -10,6 +10,8 @@
 #include "net.h"
 #include "http.h"
 
+bool featherWeightDebug = false;
+
 FeatherWeightApp* fwCreateApp() {
 
   FeatherWeightApp* app = malloc(sizeof(FeatherWeightApp));
@@ -157,6 +159,14 @@ static void* workerTask(void* argument) {
 
     pthread_mutex_unlock(&parameters->mutex);  // RELEASE LOCK
 
+    if(featherWeightDebug)
+      printf("New request on thread: %u\n", (unsigned) pthread_self());
+
+    // respond to the connection
+    const char* message = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\nConnection: close\r\n\r\nHello, world!";
+    send(connection.socketfd, message, strlen(message), 0);
+    close(connection.socketfd);
+
     // read request
     FeatherWeightRequest request;
     char* request_buffer = malloc(FW_MAX_REQUEST_SIZE+1);
@@ -178,7 +188,6 @@ static void* workerTask(void* argument) {
 
     // free request buffer
     free(request_buffer);
-
 
   }
 

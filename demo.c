@@ -12,6 +12,8 @@ FILE* rootHandler(FeatherWeightRequest* request, FILE* response) {
 
 int main() {
 
+  featherWeightDebug = true;
+
   FeatherWeightApp* app = fwCreateApp();
 
   fwGet(app, "^/$", rootHandler);
