@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+bool featherWeightDebug;
+
 /*
  * The object given to the FeatherWeightHandler that represents the HTTP request.
  * Has things like the clients IP address and parsed parameters from the path.

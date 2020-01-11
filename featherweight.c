@@ -9,6 +9,7 @@
 
 #include "net.h"
 
+bool featherWeightDebug = false;
 
 
 FeatherWeightApp* fwCreateApp() {
