@@ -1,4 +1,6 @@
-// Implements the routing tables for the server //
+#ifndef FEATHERWEIGHT_ROUTE_H
+#define FEATHERWEIGHT_ROUTE_H
+
 #include "featherweight.h"
 
 #include <regex.h>
@@ -19,3 +21,5 @@ typedef struct {
     unsigned size;
     unsigned capacity;
 } RouteTable;
+
+#endif /* FEATHERWEIGHT_ROUTE_H */
