@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "route.h"
+
 bool featherWeightDebug;
 
 /*
@@ -26,7 +28,7 @@ typedef FILE* (*FeatherWeightHandler)(FeatherWeightRequest*, FILE*);
 
 /* The application, created with fwCreateApp and destroyed with fwDestroyApp. */
 typedef struct {
-
+    RouteTable* routeTable; 
 } FeatherWeightApp;
 
 FeatherWeightApp* fwCreateApp();

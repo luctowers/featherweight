@@ -15,13 +15,21 @@ RouteTable* createRouteTable() {
 
 int destroyRouteTable(RouteTable* table) {
     
+    // Free the regex
+    for(int i = 0; i < routeTable->size; i++) {
+        Route* route = &routeTable->routes[i];
+        
+        regfree(&route->path_regex);
+    }
+ 
+    // Free tables and routes
     free(table->routes);
     free(table);
 
     return 0;
 }
 
-int registerRoute(RouteTable *routeTable, const char *uncompiledRouteRegex, const FeatherWeightHandler handler) {
+int registerRoute(RouteTable *routeTable, const char *uncompiledRouteRegex, FeatherWeightHandler handler) {
     routeTable->size += 1;
 
     if (routeTable->size > routeTable->capacity) {
@@ -38,9 +46,26 @@ int registerRoute(RouteTable *routeTable, const char *uncompiledRouteRegex, cons
         return -1;
     }
 
+    newRoute->handler = handler;
+
     return 0;
 }
 
-int findRoute(RouteTable *routeTable, char *routeName) {
-    return 0;
+FILE* executeRoute(RouteTable* routeTable, FeatherWeightRequest* request, FILE* response) {
+
+    for(int i = 0; i < routeTable->size; i++) {
+        Route* route = &routeTable->routes[i];
+        
+        int regexStatus = regexec(&route->path_regex, request->path, 0, NULL, 0);
+
+        if (regexStatus)
+            continue; 
+        
+        response = route->handler(request, response);
+
+        if (!response)
+            break;        
+    }
+
+    return response;
 }

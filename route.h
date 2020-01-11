@@ -10,7 +10,7 @@
  */
 typedef struct {
     regex_t path_regex;
-    FeatherWeightHandler *handler;
+    FeatherWeightHandler handler;
 } Route;
 
 /*
@@ -21,5 +21,10 @@ typedef struct {
     unsigned size;
     unsigned capacity;
 } RouteTable;
+
+RouteTable* createRouteTable();
+int destroyRouteTable(RouteTable* table);
+int registerRoute(RouteTable *routeTable, const char *uncompiledRouteRegex, FeatherWeightHandler handler);
+int executeRoute(RouteTable* routeTable, FeatherWeightRequest* request, FILE* response);
 
 #endif /* FEATHERWEIGHT_ROUTE_H */

@@ -15,6 +15,7 @@ bool featherWeightDebug = false;
 FeatherWeightApp* fwCreateApp() {
 
   FeatherWeightApp* app = malloc(sizeof(FeatherWeightApp));
+  app->routeTable = createRouteTable();
   return app;
 
 }
