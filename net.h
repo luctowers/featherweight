@@ -6,15 +6,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 
-typedef struct {
-  int socketfd;
-  struct sockaddr_in address;
-} IncomingConnection;
-
-typedef struct {
-  IncomingConnection* connections;
-  unsigned head, tail, size, count;
-} ConnectionQueue;
+#include "types.h"
 
 int createTCPListenerSocket(uint16_t port, int backlog_limit);
 IncomingConnection waitForConnection(int listener_socket);

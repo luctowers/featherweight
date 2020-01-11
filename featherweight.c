@@ -9,12 +9,14 @@
 
 #include "net.h"
 #include "http.h"
+#include "route.h"
 
 bool featherWeightDebug = false;
 
 FeatherWeightApp* fwCreateApp() {
 
   FeatherWeightApp* app = malloc(sizeof(FeatherWeightApp));
+  app->routeTable = createRouteTable();
   return app;
 
 }
@@ -23,13 +25,18 @@ FeatherWeightApp* fwCreateApp() {
 
 void fwDestroyApp(FeatherWeightApp* app) {
 
+  destroyRouteTable(app->routeTable);
   free(app);
 
 }
 
 
 
-void fwGet(FeatherWeightApp* app, const char* path_regex, FeatherWeightHandler handler) { }
+void fwGet(FeatherWeightApp* app, const char* path_regex, FeatherWeightHandler handler) { 
+  
+  registerRoute(app->routeTable, path_regex, handler);
+
+}
 
 
 
@@ -37,6 +44,7 @@ struct WorkerParameters {
   pthread_mutex_t mutex;
   pthread_cond_t condition;
   ConnectionQueue* connection_queue;
+  RouteTable* routeTable;
   bool shouldTerminate;
 };
 
@@ -48,6 +56,7 @@ void fwListen(FeatherWeightApp* app, uint16_t port, unsigned thread_count, unsig
   // initialise all worker params
   struct WorkerParameters workerParameters;
   workerParameters.connection_queue = createConnectionQueue(queue_size);
+  workerParameters.routeTable = app->routeTable;
   workerParameters.shouldTerminate = false;
   pthread_mutex_init(&workerParameters.mutex, NULL);
   pthread_cond_init(&workerParameters.condition, NULL);
@@ -162,11 +171,6 @@ static void* workerTask(void* argument) {
     if(featherWeightDebug)
       printf("New request on thread: %u\n", (unsigned) pthread_self());
 
-    // respond to the connection
-    const char* message = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\nConnection: close\r\n\r\nHello, world!";
-    send(connection.socketfd, message, strlen(message), 0);
-    close(connection.socketfd);
-
     // read request
     FeatherWeightRequest request;
     char* request_buffer = malloc(FW_MAX_REQUEST_SIZE+1);
@@ -183,9 +187,17 @@ static void* workerTask(void* argument) {
 
     // respond to request
     FILE* response = fileInterfaceFromConnection(&connection);
+
+    response = executeRoute(parameters->routeTable, &request, response);
+
+    if(response)
+      fclose(response); 
+
+    /*
     fprintf(response, "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nrequested path: %s", request.path);
     fclose(response);
-
+    */
+    
     // free request buffer
     free(request_buffer);
 

@@ -6,7 +6,17 @@
 
 FILE* rootHandler(FeatherWeightRequest* request, FILE* response) {
 
-  return NULL; // do not call any more handlers
+  fprintf(response, "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nrequested path: %s", request->path);
+  fclose(response);
+  return NULL;
+
+}
+
+FILE* handler404(FeatherWeightRequest* request, FILE* response) {
+
+  fprintf(response, "HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\nNot Found ;) eat dicks");
+  fclose(response);
+  return NULL;
 
 }
 
@@ -17,6 +27,8 @@ int main() {
   FeatherWeightApp* app = fwCreateApp();
 
   fwGet(app, "^/$", rootHandler);
+
+  fwGet(app, ".*", handler404);
 
   fwListen(app, PORT, THREAD_COUNT, QUEUE_SIZE);
 
