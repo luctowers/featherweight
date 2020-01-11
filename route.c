@@ -44,37 +44,3 @@ int registerRoute(RouteTable *routeTable, const char *uncompiledRouteRegex, cons
 int findRoute(RouteTable *routeTable, char *routeName) {
     return 0;
 }
-
-int main() {
-
-    // Create a handler for testing //
-    FILE* rootHandler(FeatherWeightRequest request, FILE* response) {
-
-        return NULL; // do not call any more handlers
-
-    }
-    
-    // Create table //
-    RouteTable* table = createRouteTable();
-    printf("Size: %i\n", table->size);
-    printf("Capacity: %i\n", table->capacity);
-
-    // Create a Route //
-    registerRoute(table, "^/$", rootHandler);
-    printf("Size: %i\n", table->size);
-    printf("Capacity: %i\n", table->capacity);
-
-    // Create a Route //
-    registerRoute(table, "^/$", rootHandler);
-    printf("Size: %i\n", table->size);
-    printf("Capacity: %i\n", table->capacity);
-
-    // Create a Route //
-    registerRoute(table, "^/$", rootHandler);
-    printf("Size: %i\n", table->size);
-    printf("Capacity: %i\n", table->capacity);
-
-    
-    // Delete the table //
-    destroyRouteTable(table);
-}
