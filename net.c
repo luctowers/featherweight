@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <fcntl.h>
 
 
 static const int sockopt = 1;
@@ -135,6 +135,18 @@ ConnectionQueue* destroyConnectionQueue(ConnectionQueue* queue) {
 
 void refuseConnection(IncomingConnection* connection) {
 
-    close(connection->socketfd);
+  close(connection->socketfd);
+
+}
+
+unsigned readFromConnection(IncomingConnection* connection, void* buffer, unsigned max_size) {
+
+  return recv(connection->socketfd, buffer, max_size, 0);
+
+}
+
+FILE* fileInterfaceFromConnection(IncomingConnection* connection) {
+
+  return fdopen(connection->socketfd, "w");
 
 }

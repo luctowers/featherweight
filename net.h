@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <arpa/inet.h>
 
 typedef struct {
@@ -18,6 +19,8 @@ typedef struct {
 int createTCPListenerSocket(uint16_t port, int backlog_limit);
 IncomingConnection waitForConnection(int listener_socket);
 void refuseConnection(IncomingConnection* connection);
+unsigned readFromConnection(IncomingConnection* connection, void* buffer, unsigned max_size);
+FILE* fileInterfaceFromConnection(IncomingConnection* connection);
 
 ConnectionQueue* createConnectionQueue(unsigned size);
 void connectionQueuePush(ConnectionQueue* queue, IncomingConnection connection);

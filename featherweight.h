@@ -1,6 +1,8 @@
 #ifndef FEATHERWEIGHT_H
 #define FEATHERWEIGHT_H
 
+#define FW_MAX_REQUEST_SIZE 8192
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -10,14 +12,15 @@
  * Has things like the clients IP address and parsed parameters from the path.
  */
 typedef struct {
-
+  const char* method;
+  const char* path;
 } FeatherWeightRequest;
 
 /*
  * The handler for a route. Register a handler using a method like fwGet.
  * Corresponding handlers will be called in order of registration.
  */
-typedef FILE* (*FeatherWeightHandler)(FeatherWeightRequest, FILE*);
+typedef FILE* (*FeatherWeightHandler)(FeatherWeightRequest*, FILE*);
 
 /* The application, created with fwCreateApp and destroyed with fwDestroyApp. */
 typedef struct {
