@@ -13,7 +13,7 @@ RouteTable* createRouteTable() {
     return table;
 }
 
-int destroyRouteTable(RouteTable* table) {
+int destroyRouteTable(RouteTable* routeTable) {
     
     // Free the regex
     for(int i = 0; i < routeTable->size; i++) {
@@ -23,8 +23,8 @@ int destroyRouteTable(RouteTable* table) {
     }
  
     // Free tables and routes
-    free(table->routes);
-    free(table);
+    free(routeTable->routes);
+    free(routeTable);
 
     return 0;
 }
@@ -57,6 +57,8 @@ FILE* executeRoute(RouteTable* routeTable, FeatherWeightRequest* request, FILE* 
         Route* route = &routeTable->routes[i];
         
         int regexStatus = regexec(&route->path_regex, request->path, 0, NULL, 0);
+
+        printf(" %d:%d\n", i, regexStatus);
 
         if (regexStatus)
             continue; 
