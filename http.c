@@ -2,10 +2,15 @@
 
 #include <string.h>
 
-void parseRequest(FeatherWeightRequest* request, char* request_buffer) {
-  
-  char* ptr = request_buffer;
-  request->method = strtok_r(ptr, " ", &ptr);
-  request->path = strtok_r(ptr, " ", &ptr);
+int parseRequest(FeatherWeightRequest* request, char* request_buffer) {
+  char* ptr;
 
+  if (!strtok_r(request_buffer, "\r\n\r\n", &ptr))  // mark end of header
+    return -1;
+  if (!(request->method = strtok_r(request_buffer, " ", &ptr)))  // get http method
+    return -1;
+  if (!(request->path = strtok_r(NULL, " ", &ptr)))  // get http path
+    return -1;
+
+  return 0;
 }
